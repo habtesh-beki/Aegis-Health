@@ -1,6 +1,9 @@
 import os
 import pandas as pd
+import joblib
 from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, roc_auc_score
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.join(BASE_DIR, "..")
@@ -15,9 +18,9 @@ from feature_engineering.feature_engineering import (
  
 # Paths
 RAW_DATA_PATH = os.path.join(BASE_DIR, "..", "data", "raw", "diabetes.csv")
-PROCESSED_DATA_PATH = "ml/data/processed/diabetes_processed_v1.csv"
-MODEL_PATH = "ml/models/diabetes_model_v1.pkl"
-PREPROCESSOR_PATH = "ml/models/preprocessor_v1.pkl"
+PROCESSED_DATA_PATH =os.path.join(BASE_DIR, "..", "data", "processed", "diabetes_processed_v1.csv")
+MODEL_PATH = os.path.join(BASE_DIR, "..", "models", "diabetes_model_v1.pkl")
+PREPROCESSOR_PATH = os.path.join(BASE_DIR, "..", "models", "preprocessor_v1.pkl")
 
 
 def train():
@@ -37,5 +40,31 @@ def train():
     X_train_processed = preprocessor.fit_transform(X_train)
     X_test_processed = preprocessor.transform(X_test)
 
-# data = train()
-# print(f"Training data sample:\n{data[:10]}")
+    model = LogisticRegression(max_iter=100 , class_weight="balanced")
+    model.fit(X_train_processed, y_train)
+
+    y_pred = model.predict(X_test_processed)
+    y_proba = model.predict_proba(X_test_processed)[:, 1]
+
+    print("\nClassification Report:")
+    print(classification_report(y_test, y_pred))
+
+    print("ROC-AUC:", roc_auc_score(y_test, y_proba))
+
+    # Save processed data (optional but recommended)
+    os.makedirs(os.path.dirname(PROCESSED_DATA_PATH), exist_ok=True)
+    df.to_csv(PROCESSED_DATA_PATH, index=False)
+
+    # Save model & preprocessor
+    os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
+    joblib.dump(model, MODEL_PATH)
+    joblib.dump(preprocessor, PREPROCESSOR_PATH)
+
+    print("\nTraining complete.")
+    print(f"Model saved to: {MODEL_PATH}")
+    print(f"Preprocessor saved to: {PREPROCESSOR_PATH}")
+
+
+if __name__ == "__main__":
+    train()
+
