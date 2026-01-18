@@ -1,10 +1,25 @@
-# aegis-health-ml documentation!
+# Aegis Health – Diabetes Risk Prediction
 
-## Description
+Aegis Health is a machine learning system that predicts diabetes risk
+based on patient health indicators such as glucose level, BMI, age,
+and family history.
 
-A short description of the project.
+## Objectives
 
-## Commands
+- Predict diabetes risk using supervised ML
+- Provide explainable predictions
+- Support backend API & frontend integration
 
-The Makefile contains the central entry points for common tasks related to this project.
+## High-Level Pipeline
 
+1. Data ingestion
+2. Feature engineering
+3. Model training
+4. Prediction & risk scoring
+
+## Tech Stack
+
+- Python, scikit-learn
+- Pandas, NumPy
+- FastAPI (backend)
+- Next.js (frontend)
