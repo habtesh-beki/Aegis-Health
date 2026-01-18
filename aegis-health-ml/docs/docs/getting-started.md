@@ -1,6 +1,25 @@
-Getting started
-===============
+# Getting Started
 
-This is where you describe how to get set up on a clean install, including the
-commands necessary to get the raw data (using the `sync_data_from_s3` command,
-for example), and then how to make the cleaned, final data sets.
+## Requirements
+
+- Python 3.10+
+- Virtualenv or Poetry
+
+## Setup
+
+```bash
+git clone https://github.com/yourname/aegis-health
+cd aegis-health
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+```
+
+## Train the model
+
+python -m aegis_health_ml.modeling.train
+
+## Make Prediction
+
+python -m aegis_health_ml.modeling.predict
