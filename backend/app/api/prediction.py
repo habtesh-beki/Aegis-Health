@@ -1,12 +1,22 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from app.schemas.prediction import DiabetesPredictionRequest
 from app.db.session import get_db
-from app.db.models import Prediction
-from app.schemas.prediction import PredictionCreate, PredictionResponse
+from app.services.prediction_service import create_prediction
 
-router = APIRouter(prefix="/predictions")
+router = APIRouter()
 
-# @router.post("/", response_model=PredictionResponse)
-# def create_prediction(
-#     prediction:
-# )
+@router.post("/predict")
+def predict(
+    data: DiabetesPredictionRequest,
+    db: Session = Depends(get_db)
+):
+    
+    print("Received prediction request with data:", data)
+    prediction = create_prediction(db, data.dict())
+    
+    return {
+        "prediction_id": prediction.id,
+        "risk_probability": f"{prediction.risk_probability}%",
+        "risk_level": prediction.risk_level
+    }
