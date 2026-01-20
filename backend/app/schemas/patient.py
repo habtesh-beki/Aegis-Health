@@ -4,19 +4,33 @@ from typing import Optional
 
 
 class PatientCreate(BaseModel):
-    name: str
+    hospital_id: int
+    patient_name: str
     age: int
-    gender: str
-    email: Optional[str] = None
-    phone: Optional[str] = None
-
+    pregnancies: int
+    glucose: float
+    blood_pressure: float
+    skin_thickness: float
+    DiabetesPedigreeFunction: float
+    insulin: float
+    bmi: float
 
 class patientResponse(BaseModel):
     id: int
-    name: str
+    hospital_id: int
+    patient_name: str
     age: int
-    gender: str
+    pregnancies: int
+    glucose: float
+    blood_pressure: float
+    skin_thickness: float
+    insulin: float
+    bmi: float
+    risk_probability: float
+    DiabetesPedigreeFunction: float
+    risk_level: str
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = {
+        "from_attributes": True
+    }
