@@ -1,11 +1,13 @@
 "use client";
 
 import type React from "react";
+import api from "@/lib/axios";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -19,6 +21,7 @@ import Link from "next/link";
 
 export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const [formData, setFormData] = useState({
     hospitalName: "",
     registrationNumber: "",
@@ -31,16 +34,34 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
-    // Simulate registration
-    setTimeout(() => {
-      setLoading(false);
-      toast("Registration Successful", {
-        description:
-          "Your hospital has been registered. Please check your email for verification.",
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const response = await api.post("/hospitals", {
+        hospital_name: formData.hospitalName,
+        registration_number: formData.registrationNumber,
+        email: formData.email,
+        phone: formData.phone,
+        admin_name: formData.adminName,
+        password: formData.password,
       });
-    }, 2000);
+      toast.success("Registration Successful", {
+        description: "Your hospital has been registered. You can login now.",
+      });
+      console.log("Backend response:", response.data);
+      router.push("/login");
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
