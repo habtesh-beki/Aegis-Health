@@ -8,8 +8,9 @@ from jose import jwt
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 # JWT settings
+SECRET_KEY = "AEGIS_HEALTH_SECRET_KEY_FOR_JWT"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 1 day
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
@@ -44,29 +45,6 @@ def validate_password_strength(password: str) -> tuple[bool, str]:
     
     return True, "Password is strong"
 
-# JWT Token functions (for authentication)
-# def create_access_token(
-#     subject: Union[str, Any], 
-#     expires_delta: timedelta = None
-# ) -> str:
-#     """
-#     Create JWT access token
-#     """
-#     if expires_delta:
-#         expire = datetime.utcnow() + expires_delta
-#     else:
-#         expire = datetime.utcnow() + timedelta(
-#             minutes=ACCESS_TOKEN_EXPIRE_MINUTES
-#         )
-    
-#     to_encode = {"exp": expire, "sub": str(subject)}
-#     encoded_jwt = jwt.encode(
-#         to_encode, 
-#         settings.SECRET_KEY, 
-#         algorithm=ALGORITHM
-#     )
-#     return encoded_jwt
-
 # def verify_token(token: str) -> dict:
 #     """
 #     Verify JWT token
@@ -81,3 +59,12 @@ def validate_password_strength(password: str) -> tuple[bool, str]:
 #         return payload
 #     except jwt.JWTError:
 #         return None
+
+
+
+
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
