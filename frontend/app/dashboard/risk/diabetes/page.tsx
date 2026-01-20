@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-
+import api from "@/lib/axios";
 import { useState } from "react";
 import {
   Card,
@@ -17,49 +17,73 @@ import { toast } from "sonner";
 import { Activity, TrendingUp, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-interface PredictionFormData {
-  patientId: string;
-  patientName: string;
-  age: string;
-  glucose: string;
-  bmi: string;
-  bloodPressure: string;
-  insulin: string;
-  skinThickness: string;
-  pregnancies: string;
-}
-
 export default function DiabetesRiskPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   //PredictionFormData
   const [formData, setFormData] = useState<any>({
-    patientId: "",
-    patientName: "",
+    hospital_id: "",
+    patient_name: "",
     age: "",
     glucose: "",
     bmi: "",
-    bloodPressure: "",
+    blood_pressure: "",
     insulin: "",
-    skinThickness: "",
+    skin_thickness: "",
     pregnancies: "",
+    diabetes_pedigree_function: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    // Simulate prediction calculation
-    setTimeout(() => {
-      setLoading(false);
-      toast("Analysis Complete", {
+    try {
+      // 🔁 Prepare payload (convert strings → numbers)
+      const payload = {
+        hospital_id: Number(formData.patientId),
+        patient_name: formData.patientName,
+        age: Number(formData.age),
+        pregnancies: Number(formData.pregnancies),
+        glucose: Number(formData.glucose),
+        blood_pressure: Number(formData.blood_pressure),
+        skin_thickness: Number(formData.skin_thickness),
+        DiabetesPedigreeFunction: Number(formData.diabetes_pedigree_function),
+        insulin: Number(formData.insulin),
+        bmi: Number(formData.bmi),
+      };
+      // 🔮 Call backend
+      const response = await api.post("/patients/", payload);
+      toast.success("Analysis Complete", {
         description: "Risk assessment has been generated successfully.",
       });
 
-      // Navigate to results page with form data
-      const queryParams = new URLSearchParams(formData).toString();
+      const queryParams = new URLSearchParams({
+        risk_probability: String(response.data.risk_probability),
+        risk_level: String(response.data.risk_level),
+        hospital_id: String(payload.hospital_id),
+        patient_name: String(payload.patient_name),
+        age: String(payload.age),
+        pregnancies: String(payload.pregnancies),
+        glucose: String(payload.glucose),
+        blood_pressure: String(payload.blood_pressure),
+        skin_thickness: String(payload.skin_thickness),
+        insulin: String(payload.insulin),
+        bmi: String(payload.bmi),
+      }).toString();
+
       router.push(`/dashboard/risk/diabetes/results?${queryParams}`);
-    }, 2500);
+    } catch (error: any) {
+      console.error(error);
+
+      toast.error("Prediction Failed", {
+        description:
+          error?.response?.data?.detail ||
+          "Something went wrong. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -179,18 +203,38 @@ export default function DiabetesRiskPage() {
                   </p>
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="diabetesPedigreeFunction">
+                    Diabetes Pedigree Function{" "}
+                    <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="diabetes_pedigree_function"
+                    name="diabetes_pedigree_function"
+                    type="float"
+                    placeholder="0.5"
+                    min="0"
+                    max="5"
+                    value={formData.diabetes_pedigree_function}
+                    onChange={handleChange}
+                    required
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Normal range: 0.1–1.5 (fasting)
+                  </p>
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="bloodPressure">
                     Blood Pressure (mmHg){" "}
                     <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="bloodPressure"
-                    name="bloodPressure"
+                    name="blood_pressure"
                     type="number"
                     placeholder="80"
                     min="40"
                     max="200"
-                    value={formData.bloodPressure}
+                    value={formData.blood_pressure}
                     onChange={handleChange}
                     required
                   />
@@ -225,12 +269,12 @@ export default function DiabetesRiskPage() {
                   </Label>
                   <Input
                     id="skinThickness"
-                    name="skinThickness"
+                    name="skin_thickness"
                     type="number"
                     placeholder="20"
                     min="0"
                     max="100"
-                    value={formData.skinThickness}
+                    value={formData.skin_thickness}
                     onChange={handleChange}
                     required
                   />
