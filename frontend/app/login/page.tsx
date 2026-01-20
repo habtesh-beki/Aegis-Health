@@ -1,6 +1,7 @@
 "use client";
 
 import type React from "react";
+import api from "@/lib/axios";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -28,16 +29,34 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
-    // Simulate login
-    setTimeout(() => {
-      setLoading(false);
-      toast("Login Successful", {
+    if (!formData.email || !formData.password) {
+      toast.error("Email and password are required");
+      return;
+    }
+    try {
+      setLoading(true);
+
+      const { data } = await api.post("/hospitals/login", {
+        email: formData.email,
+        password: formData.password,
+      });
+
+      // Optional: store token
+      if (data?.token) {
+        localStorage.setItem("access_token", data.token);
+      }
+
+      toast.success("Login Successful", {
         description: "Welcome back to Aegis Health",
       });
+
       router.push("/dashboard");
-    }, 1500);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Invalid email or password");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
