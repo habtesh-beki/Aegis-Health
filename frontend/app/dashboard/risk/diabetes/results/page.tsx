@@ -45,89 +45,25 @@ function ResultsContent() {
   const bmi = Number.parseFloat(searchParams.get("bmi") || "25");
   const age = Number.parseInt(searchParams.get("age") || "45");
   const bloodPressure = Number.parseFloat(
-    searchParams.get("bloodPressure") || "80"
+    searchParams.get("bloodPressure") || "80",
   );
   const insulin = Number.parseFloat(searchParams.get("insulin") || "85");
 
-  // Simulate risk calculation based on inputs
-  let riskScore = 0;
-  const factors: Array<{ name: string; impact: number; value: string }> = [];
+  // 🔥 Use risk values from API response (query params)
+  const riskScore = Number(searchParams.get("risk_probability"));
+  const riskLevel = searchParams.get("risk_level");
 
-  // Glucose impact (most significant)
-  if (glucose > 140) {
-    const glucoseImpact = Math.min(((glucose - 100) / 200) * 35, 35);
-    riskScore += glucoseImpact;
-    factors.push({
-      name: "Glucose Level",
-      impact: Math.round(glucoseImpact),
-      value: `${glucose} mg/dL`,
-    });
-  }
-
-  // BMI impact
-  if (bmi > 25) {
-    const bmiImpact = Math.min(((bmi - 18.5) / 40) * 20, 20);
-    riskScore += bmiImpact;
-    factors.push({
-      name: "BMI",
-      impact: Math.round(bmiImpact),
-      value: `${bmi.toFixed(1)} kg/m²`,
-    });
-  }
-
-  // Age impact
-  if (age > 45) {
-    const ageImpact = Math.min(((age - 18) / 80) * 15, 15);
-    riskScore += ageImpact;
-    factors.push({
-      name: "Age",
-      impact: Math.round(ageImpact),
-      value: `${age} years`,
-    });
-  }
-
-  // Blood Pressure impact
-  if (bloodPressure > 80) {
-    const bpImpact = Math.min(((bloodPressure - 60) / 80) * 12, 12);
-    riskScore += bpImpact;
-    factors.push({
-      name: "Blood Pressure",
-      impact: Math.round(bpImpact),
-      value: `${bloodPressure} mmHg`,
-    });
-  }
-
-  // Insulin impact
-  if (insulin > 100) {
-    const insulinImpact = Math.min(((insulin - 30) / 500) * 18, 18);
-    riskScore += insulinImpact;
-    factors.push({
-      name: "Insulin Level",
-      impact: Math.round(insulinImpact),
-      value: `${insulin} µU/mL`,
-    });
-  }
-
-  // Cap the risk score at 95
-  riskScore = Math.min(Math.round(riskScore), 95);
-
-  // Determine risk level
-  let riskLevel = "Low";
+  // Set UI variant based on risk level
   let riskVariant: "secondary" | "default" | "destructive" = "secondary";
   let riskColor = "text-success";
 
   if (riskScore >= 70) {
-    riskLevel = "High";
     riskVariant = "destructive";
     riskColor = "text-destructive";
   } else if (riskScore >= 40) {
-    riskLevel = "Moderate";
     riskVariant = "default";
     riskColor = "text-warning";
   }
-
-  // Sort factors by impact
-  factors.sort((a, b) => b.impact - a.impact);
 
   return (
     <div className="space-y-6 max-w-6xl">
@@ -191,8 +127,8 @@ function ResultsContent() {
                       riskScore >= 70
                         ? "text-destructive"
                         : riskScore >= 40
-                        ? "text-warning"
-                        : "text-success"
+                          ? "text-warning"
+                          : "text-success"
                     }
                   />
                 </svg>
@@ -281,61 +217,6 @@ function ResultsContent() {
           </Card>
         </div>
       </div>
-
-      {/* Contributing Factors */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-primary" />
-            Top Contributing Factors
-          </CardTitle>
-          <CardDescription>
-            Clinical parameters with the highest impact on risk score
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {factors.length > 0 ? (
-              factors.map((factor, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center h-8 w-8 rounded bg-primary/10 text-primary text-sm font-bold">
-                        {index + 1}
-                      </div>
-                      <div>
-                        <p className="font-medium text-foreground">
-                          {factor.name}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {factor.value}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-lg font-semibold text-destructive">
-                        +{factor.impact}%
-                      </p>
-                      <p className="text-xs text-muted-foreground">impact</p>
-                    </div>
-                  </div>
-                  <Progress
-                    value={(factor.impact / 35) * 100}
-                    className="h-2"
-                  />
-                </div>
-              ))
-            ) : (
-              <div className="text-center py-8">
-                <Activity className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                <p className="text-muted-foreground">
-                  All parameters are within normal ranges
-                </p>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Clinical Parameters */}
       <Card>
