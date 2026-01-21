@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
+import api from "@/lib/axios";
 import {
   Card,
   CardContent,
@@ -22,82 +23,6 @@ import {
 import { Search, Eye, Download, Filter } from "lucide-react";
 import Link from "next/link";
 
-// Mock patient data
-const patients = [
-  {
-    id: "PT-1001",
-    name: "Sarah Johnson",
-    lastScan: "2025-01-15",
-    riskScore: 85,
-    riskLevel: "High",
-    age: 54,
-    condition: "Diabetes",
-  },
-  {
-    id: "PT-1002",
-    name: "Michael Chen",
-    lastScan: "2025-01-14",
-    riskScore: 42,
-    riskLevel: "Moderate",
-    age: 38,
-    condition: "Heart Disease",
-  },
-  {
-    id: "PT-1003",
-    name: "Emily Davis",
-    lastScan: "2025-01-13",
-    riskScore: 18,
-    riskLevel: "Low",
-    age: 29,
-    condition: "Diabetes",
-  },
-  {
-    id: "PT-1004",
-    name: "Robert Wilson",
-    lastScan: "2025-01-12",
-    riskScore: 73,
-    riskLevel: "High",
-    age: 61,
-    condition: "Hypertension",
-  },
-  {
-    id: "PT-1005",
-    name: "Jennifer Martinez",
-    lastScan: "2025-01-11",
-    riskScore: 55,
-    riskLevel: "Moderate",
-    age: 45,
-    condition: "Diabetes",
-  },
-  {
-    id: "PT-1006",
-    name: "David Brown",
-    lastScan: "2025-01-10",
-    riskScore: 22,
-    riskLevel: "Low",
-    age: 32,
-    condition: "Heart Disease",
-  },
-  {
-    id: "PT-1007",
-    name: "Lisa Anderson",
-    lastScan: "2025-01-09",
-    riskScore: 88,
-    riskLevel: "High",
-    age: 57,
-    condition: "Diabetes",
-  },
-  {
-    id: "PT-1008",
-    name: "James Taylor",
-    lastScan: "2025-01-08",
-    riskScore: 35,
-    riskLevel: "Moderate",
-    age: 41,
-    condition: "Hypertension",
-  },
-];
-
 function getRiskBadgeVariant(level: string) {
   switch (level) {
     case "High":
@@ -110,14 +35,58 @@ function getRiskBadgeVariant(level: string) {
       return "default";
   }
 }
+type UIPatient = {
+  id: string;
+  name: string;
+  lastScan: string;
+  riskScore: number;
+  riskLevel: "High" | "Moderate" | "Low";
+  age: number;
+  condition: string;
+};
 
 function PatientRecordsContent() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [patients, setPatients] = useState<UIPatient[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPatients = async () => {
+      try {
+        console.log("Fetching patients from API...");
+        const response = await api.get("/patients/");
+        const transformedPatients: UIPatient[] = response.data.map(
+          (patient: any) => ({
+            id: patient.id, // or PT-${1000 + patient.id}
+            name: patient.patient_name,
+            age: patient.age,
+            lastScan: new Date(patient.created_at).toLocaleDateString(),
+            riskScore: Math.round(patient.risk_probability), // 47.51 → 48
+            riskLevel:
+              patient.risk_probability >= 70
+                ? "High"
+                : patient.risk_probability >= 40
+                  ? "Moderate"
+                  : "Low",
+            condition: "Diabetes",
+          }),
+        );
+        setPatients(transformedPatients);
+      } catch (error) {
+        console.error("Failed to fetch patients", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPatients();
+  }, []);
+  console.log("Patients state:", patients);
 
   const filteredPatients = patients.filter(
     (patient) =>
       patient.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      patient.id.toLowerCase().includes(searchQuery.toLowerCase())
+      patient.id.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
@@ -201,8 +170,8 @@ function PatientRecordsContent() {
                           patient.riskScore >= 70
                             ? "text-destructive"
                             : patient.riskScore >= 40
-                            ? "text-warning"
-                            : "text-success"
+                              ? "text-warning"
+                              : "text-success"
                         }`}
                       >
                         {patient.riskScore}%

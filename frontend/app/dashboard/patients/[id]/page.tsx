@@ -5,59 +5,84 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import api from "@/lib/axios";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Activity, User, Calendar, FileText, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+// import { useEffect, useState } from "react";
 
 export default async function PatientDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: Number }>;
 }) {
+  // const [patient , setPatient] = useState()
   const { id } = await params;
+  const patientId = id; // PT-0001 → 1
+  console.log(patientId);
+  const response = await api.get(`patients/${patientId}`);
 
-  // Mock patient detail data
-  const patient = {
-    id: id,
-    name: "Sarah Johnson",
-    age: 54,
-    gender: "Female",
-    bloodType: "A+",
-    phone: "+1 (555) 123-4567",
-    email: "sarah.johnson@email.com",
-    address: "123 Main St, Springfield, IL 62701",
-    lastScan: "2025-01-15",
-    riskScore: 85,
-    riskLevel: "High",
+  const patient = response.data;
+
+  // 🔄 Transform backend → UI
+  const patientUI = {
+    id: `PT-${patient.id}`,
+    name: patient.patient_name,
+    age: patient.age,
+    lastScan: new Date(patient.created_at).toLocaleDateString(),
+    riskScore: Math.round(patient.risk_probability),
+    riskLevel: patient.risk_level.replace(" Risk", ""),
     condition: "Diabetes",
     vitals: {
-      glucose: 185,
-      bmi: 31.2,
-      bloodPressure: "145/92",
-      heartRate: 82,
+      glucose: patient.glucose,
+      bmi: patient.bmi,
+      bloodPressure: patient.blood_pressure,
+      insulin: patient.insulin,
     },
-    history: [
-      {
-        date: "2025-01-15",
-        condition: "Diabetes Screening",
-        riskScore: 85,
-        result: "High Risk",
-      },
-      {
-        date: "2024-12-10",
-        condition: "Annual Checkup",
-        riskScore: 78,
-        result: "Moderate Risk",
-      },
-      {
-        date: "2024-09-05",
-        condition: "Diabetes Screening",
-        riskScore: 72,
-        result: "Moderate Risk",
-      },
-    ],
   };
+
+  // Mock patient detail data
+  // const patient = {
+  //   id: id,
+  //   name: "Sarah Johnson",
+  //   age: 54,
+  //   gender: "Female",
+  //   bloodType: "A+",
+  //   phone: "+1 (555) 123-4567",
+  //   email: "sarah.johnson@email.com",
+  //   address: "123 Main St, Springfield, IL 62701",
+  //   lastScan: "2025-01-15",
+  //   riskScore: 85,
+  //   riskLevel: "High",
+  //   condition: "Diabetes",
+  //   vitals: {
+  //     glucose: 185,
+  //     bmi: 31.2,
+  //     bloodPressure: "145/92",
+  //     heartRate: 82,
+  //   },
+  //   history: [
+  //     {
+  //       date: "2025-01-15",
+  //       condition: "Diabetes Screening",
+  //       riskScore: 85,
+  //       result: "High Risk",
+  //     },
+  //     {
+  //       date: "2024-12-10",
+  //       condition: "Annual Checkup",
+  //       riskScore: 78,
+  //       result: "Moderate Risk",
+  //     },
+  //     {
+  //       date: "2024-09-05",
+  //       condition: "Diabetes Screening",
+  //       riskScore: 72,
+  //       result: "Moderate Risk",
+  //     },
+  //   ],
+  // };
 
   return (
     <div className="space-y-6">
@@ -103,7 +128,7 @@ export default async function PatientDetailPage({
                 <div>
                   <p className="text-sm text-muted-foreground">Age / Gender</p>
                   <p className="font-medium text-foreground">
-                    {patient.age} years / {patient.gender}
+                    {patientUI.age} years / Women
                   </p>
                 </div>
               </div>
@@ -112,7 +137,7 @@ export default async function PatientDetailPage({
                 <div>
                   <p className="text-sm text-muted-foreground">Blood Type</p>
                   <p className="font-medium text-foreground">
-                    {patient.bloodType}
+                    A+ {/*   {patient.bloodType} */}
                   </p>
                 </div>
               </div>
@@ -128,7 +153,7 @@ export default async function PatientDetailPage({
                 <div>
                   <p className="text-sm text-muted-foreground">Last Scan</p>
                   <p className="font-medium text-foreground">
-                    {patient.lastScan}
+                    {patientUI.lastScan}
                   </p>
                 </div>
               </div>
@@ -153,27 +178,27 @@ export default async function PatientDetailPage({
             <div className="pb-3 border-b border-border">
               <p className="text-sm text-muted-foreground">Glucose Level</p>
               <p className="text-2xl font-bold text-destructive">
-                {patient.vitals.glucose} mg/dL
+                {patientUI.vitals.glucose} mg/dL
               </p>
             </div>
             <div className="pb-3 border-b border-border">
               <p className="text-sm text-muted-foreground">BMI</p>
               <p className="text-2xl font-bold text-warning">
-                {patient.vitals.bmi}
+                {patientUI.vitals.bmi}
               </p>
             </div>
             <div className="pb-3 border-b border-border">
               <p className="text-sm text-muted-foreground">Blood Pressure</p>
               <p className="text-2xl font-bold text-warning">
-                {patient.vitals.bloodPressure}
+                {patientUI.vitals.bloodPressure}
               </p>
             </div>
-            <div>
+            {/* <div>
               <p className="text-sm text-muted-foreground">Heart Rate</p>
               <p className="text-2xl font-bold text-foreground">
-                {patient.vitals.heartRate} bpm
+                {patientUI.vitals.heartRate} bpm
               </p>
-            </div>
+            </div> */}
           </CardContent>
         </Card>
       </div>
@@ -188,34 +213,34 @@ export default async function PatientDetailPage({
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {patient.history.map((record, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between pb-4 border-b border-border last:border-0"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="bg-primary/10 text-primary p-3 rounded-lg">
-                    <Calendar className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-foreground">
-                      {record.condition}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {record.date}
-                    </p>
-                  </div>
+            {/* {patient.map((record, index) => ( */}
+            <div
+              // key={id}
+              className="flex items-center justify-between pb-4 border-b border-border last:border-0"
+            >
+              <div className="flex items-center gap-4">
+                <div className="bg-primary/10 text-primary p-3 rounded-lg">
+                  <Calendar className="h-5 w-5" />
                 </div>
-                <div className="text-right">
-                  <p className="font-semibold text-foreground">
-                    {record.riskScore}%
+                <div>
+                  <p className="font-medium text-foreground">
+                    Diabetes Screening
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    {record.result}
+                    {patientUI.lastScan}
                   </p>
                 </div>
               </div>
-            ))}
+              <div className="text-right">
+                <p className="font-semibold text-foreground">
+                  {patientUI.riskLevel}%
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {patientUI.riskScore}
+                </p>
+              </div>
+            </div>
+            {/* ))} */}
           </div>
         </CardContent>
       </Card>

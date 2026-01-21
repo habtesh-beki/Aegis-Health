@@ -48,14 +48,14 @@ export function ModelTransparencySidebar() {
                 <span className="text-sm font-medium text-foreground">
                   Algorithm
                 </span>
-                <Badge variant="secondary">XGBoost v1.2</Badge>
+                <Badge variant="secondary">RandomForestClassifier</Badge>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-foreground">
                   Release Date
                 </span>
                 <span className="text-sm text-muted-foreground">
-                  October 2024
+                  January 2025
                 </span>
               </div>
             </div>
