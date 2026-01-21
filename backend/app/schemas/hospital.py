@@ -1,21 +1,31 @@
-from pydantic import BaseModel
+from datetime import datetime
+from pydantic import BaseModel, EmailStr
 
 
 class HospitalCreate(BaseModel):
-    name: str
-    address: str
+    registration_number: str
+    hospital_name: str
+    admin_name: str
     phone: str
-    email: str
+    email: EmailStr
     password: str
-
 
 class HospitalResponse(BaseModel):
     id: int
-    name: str
-    address: str
+    registration_number: str
+    hospital_name: str
+    admin_name: str
     phone: str
-    email: str
-    password_hash: str
-
+    email: EmailStr
+    created_at: datetime
+    
     class Config:
         from_attributes = True
+
+class HospitalLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
