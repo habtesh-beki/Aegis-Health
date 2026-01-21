@@ -229,7 +229,7 @@ The ML system is built using a **research → production** workflow.
 
 ![Feature Distribution](docs/images/distribution.png)
 ![correlation matrix Plot](docs/images/correlation.png)
-![target distribution Curve](docs/images/distribution.png)
+![target distribution Curve](docs/images/target.png)
 
 <!-- ``` -->
 
