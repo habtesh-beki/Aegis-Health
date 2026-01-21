@@ -178,11 +178,13 @@ The clinician-facing dashboard provides a clean, intuitive workflow:
 
 📸 **Dashboard Preview**
 
-```md
+<!-- ```md -->
+
 ![Dashboard Overview](docs/images/dashboard.png)
 ![Prediction Page](docs/images/prediction.png)
 ![Prediction Page](docs/images/result.png)
-```
+
+<!-- ``` -->
 
 ---
 
