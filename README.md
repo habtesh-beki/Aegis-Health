@@ -181,7 +181,7 @@ The clinician-facing dashboard provides a clean, intuitive workflow:
 <!-- ```md -->
 
 ![Dashboard Overview](docs/images/dashboard.png)
-![Prediction Page](docs/images/prediction.png)
+![Prediction Page](docs/images/predictor.png)
 ![Prediction Page](docs/images/result.png)
 
 <!-- ``` -->
@@ -225,11 +225,13 @@ The ML system is built using a **research → production** workflow.
 
 📊 **Model Visualizations**
 
-```md
+<!-- ```md -->
+
 ![Feature Distribution](docs/images/distribution.png)
 ![correlation matrix Plot](docs/images/correlation.png)
 ![target distribution Curve](docs/images/distribution.png)
-```
+
+<!-- ``` -->
 
 ---
 
