@@ -65,51 +65,15 @@ def predict(input_data:dict, model_path: Path = MODELS_DIR , threshold: float = 
 
 
 if __name__ == "__main__":
-    # Example input data for prediction
     sample_input = {
-        #1. affected 
-
-        # "Pregnancies": 6,
-        # "Glucose": 148,
-        # "BloodPressure": 72,
-        # "SkinThickness": 35,
-        # "Insulin": 0,
-        # "BMI": 33.6,
-        # "DiabetesPedigreeFunction": 0.627,
-        # "Age": 50
-
-        # 2.affected 
-
-    
-        # "Pregnancies": 1,
-        # "Glucose": 178,
-        # "BloodPressure": 88,
-        # "SkinThickness": 34,
-        # "Insulin": 125,
-        # "BMI": 36.2,
-        # "DiabetesPedigreeFunction": 0.512,
-        # "Age": 48
-        
-        # 3. not affected 
-
-        # "Pregnancies": 2,
-        # "Glucose": 92,
-        # "BloodPressure": 70,
-        # "SkinThickness": 22,
-        # "Insulin": 85,
-        # "BMI": 24.3,
-        # "DiabetesPedigreeFunction": 0.186,
-        # "Age": 28
-
-        # 4. not affected
-        "Pregnancies": 0,
-        "Glucose": 89,
-        "BloodPressure": 76,
-        "SkinThickness": 19,
-        "Insulin": 94,
-        "BMI": 22.1,
-        "DiabetesPedigreeFunction": 0.260,
-        "Age": 32
+        "Pregnancies": 1,
+        "Glucose": 178,
+        "BloodPressure": 88,
+        "SkinThickness": 34,
+        "Insulin": 125,
+        "BMI": 36.2,
+        "DiabetesPedigreeFunction": 0.512,
+        "Age": 48
         }
     result = predict(sample_input)
     
