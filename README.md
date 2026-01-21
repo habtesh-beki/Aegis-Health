@@ -177,7 +177,6 @@ The clinician-facing dashboard provides a clean, intuitive workflow:
 - **Patient History & Trends**
 
 📸 **Dashboard Preview**
-_Add screenshots here_
 
 ```md
 ![Dashboard Overview](docs/images/dashboard.png)
@@ -223,7 +222,6 @@ The ML system is built using a **research → production** workflow.
    - SHAP explainability
 
 📊 **Model Visualizations**
-_Add images generated from your notebooks_
 
 ```md
 ![Feature Distribution](docs/images/distribution.png)
