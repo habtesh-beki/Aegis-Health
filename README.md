@@ -339,9 +339,9 @@ Aegis_Health/
 ### Run the Full Stack
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/habtesh-beki/Aegis-Health.git
 cd Aegis-Health
-docker-compose up --build
+# docker-compose up --build
 ```
 
 ---
