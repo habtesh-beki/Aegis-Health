@@ -296,7 +296,7 @@ Aegis_Health/
 ├── backend/             # API, auth, persistence (FastAPI)
 ├── aegis_health_ml/     # ML research & training pipeline
 ├── docs/                # Images, ethics, roadmap
-└── docker/              # Deployment configuration
+
 ```
 
 ---
@@ -322,10 +322,10 @@ Aegis_Health/
 - Tailwind CSS
 - Shadcn/UI
 
-**Infrastructure**
+<!-- **Infrastructure**
 
 - Docker
-- Docker Compose
+- Docker Compose -->
 
 ---
 
@@ -334,7 +334,7 @@ Aegis_Health/
 ### Prerequisites
 
 - Python 3.9+
-- Docker & Docker Compose
+<!-- - Docker & Docker Compose -->
 
 ### Run the Full Stack
 
