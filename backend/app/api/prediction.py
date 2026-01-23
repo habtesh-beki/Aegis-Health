@@ -3,6 +3,9 @@ from sqlalchemy.orm import Session
 from app.schemas.prediction import DiabetesPredictionRequest
 from app.db.session import get_db
 from app.services.prediction_service import create_prediction
+# from schemas.prediction import DiabetesPredictionRequest
+# from db.session import get_db
+# from services.prediction_service import create_prediction
 
 router = APIRouter()
 

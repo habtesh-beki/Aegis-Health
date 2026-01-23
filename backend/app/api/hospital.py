@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException , status
 from sqlalchemy.orm import Session
-from app.db.session import get_db
+from app.db.session import get_db 
 from app.db.models import Hospital
 from app.schemas.hospital import HospitalCreate, HospitalResponse, HospitalLogin , TokenResponse
 from app.services.auth_services import authenticate_hospital

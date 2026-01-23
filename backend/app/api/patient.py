@@ -5,6 +5,11 @@ from app.db.models import Patient
 from app.schemas.patient import PatientCreate, patientResponse
 from app.schemas.prediction import DiabetesPredictionRequest
 from app.services.prediction_service import create_prediction
+# from db.session import get_db
+# from db.models import Patient
+# from schemas.patient import PatientCreate, patientResponse
+# from schemas.prediction import DiabetesPredictionRequest
+# from services.prediction_service import create_prediction
 import logging
 logger = logging.getLogger(__name__)
 
