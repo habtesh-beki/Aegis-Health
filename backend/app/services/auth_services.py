@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
 from app.db.models import Hospital
 from app.core.security import  verify_password, create_access_token
+# from db.models import Hospital
+# from core.security import  verify_password, create_access_token
 
 
 def authenticate_hospital(db: Session, email: str, password: str):
