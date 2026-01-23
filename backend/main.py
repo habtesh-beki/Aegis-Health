@@ -1,10 +1,17 @@
+# from fastapi import FastAPI
 from fastapi import FastAPI
+# from app.api import hospital_router , prediction_router, patient_router
 from app.api import hospital_router , prediction_router, patient_router
 from fastapi.middleware.cors import CORSMiddleware
+from app.db.models import Base
+from app.db.session import engine
 
 
 app = FastAPI(title="Aegis Health API")
 
+@app.on_event("startup")
+def startup():
+    Base.metadata.create_all(bind=engine)
 
 app.add_middleware(
     CORSMiddleware,
